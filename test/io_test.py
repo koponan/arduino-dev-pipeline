@@ -15,11 +15,28 @@ class SerialClient:
     def write(self, data: str):
         self.serial.write(bytes(data, encoding="ascii"))
 
+def load_config():
+    fpath = "../config.sh"
+    config = {}
+    fcontent = None
+    with open(fpath, "r") as fp:
+        fcontent = fp.read()
+    lines = fcontent.split("\n")
+    for line in lines:
+        if not line:
+            continue
+
+        key, value = line.split("=")
+        config[key] = value.replace('"', "")
+
+    return config
+
 class IoTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         timeout_seconds = 5
-        ser = Serial("/dev/ttyACM0", 9600, timeout=timeout_seconds)
+        config = load_config()
+        ser = Serial(config["PORT"], 9600, timeout=timeout_seconds)
         cls.client = SerialClient(ser)
 
     def test_1_handshake(self):

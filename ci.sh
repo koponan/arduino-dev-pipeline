@@ -1,11 +1,13 @@
 set -euo pipefail
 
+source ./config.sh
+
 # Compile
-arduino-cli compile -b arduino:avr:mega --output-dir app/target \
+arduino-cli compile -b $BOARD --output-dir app/target \
     --verbose  app
 
 # Upload
-arduino-cli upload -p /dev/ttyACM0 -b arduino:avr:mega \
+arduino-cli upload -p $PORT -b $BOARD \
     --input-dir app/target --verbose
 
 # Test
