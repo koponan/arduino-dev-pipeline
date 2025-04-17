@@ -6,12 +6,11 @@ application. Overview of contents:
 same name for directory and enclosed file.
 - test: Python testing by communicating with the board over serial.
 - ci.sh: Defines the build chain.
+- config.sh: Store parameters for ci.sh and test.
 
-For PoC scope all parameters are hard-coded:
-- board: Arduino Mega
-- port: /dev/ttyACM0
+For PoC scope the following parameters are hard-coded:
 - baudrate: 9600
 - serial timeout in test: 5s
 
-Adding configurability to the setup to create a script/template that
-can be shared across projects is TODO.
+Port and board on the other hand are configurable in config.sh.
+Creating a configurable script/template that can be shared across projects is TODO.
