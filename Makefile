@@ -1,19 +1,23 @@
+# Params with defauls
 SKETCH_DIR ?= app
 BOARD ?= "arduino:avr:mega"
 PORT ?= "/dev/ttyACM0"
+# Target files
+UPLOAD = target/upload.txt
+BINARY = target/$(SKETCH_DIR).ino.hex
 
 .PHONY: test list
 
 # TODO: Port and Baudrate should be communicated to test program
-test: target/upload.txt
+test: $(UPLOAD)
 	./test.sh
 
-target/upload.txt: target/app.ino.hex
+$(UPLOAD): $(BINARY)
 	arduino-cli upload -p $(PORT) -b $(BOARD) \
 	--input-dir target --verbose
-	touch target/upload.txt
+	touch $(UPLOAD)
 
-target/app.ino.hex: $(SKETCH_DIR)/app.ino
+$(BINARY): $(SKETCH_DIR)/$(SKETCH_DIR).ino
 	arduino-cli compile -b $(BOARD) --output-dir target \
 	--verbose  $(SKETCH_DIR)
 
