@@ -1,2 +1,3 @@
-PORT="/dev/ttyACM0"
+SKETCH_DIR="app"
 BOARD="arduino:avr:mega"
+PORT="/dev/ttyACM0"
