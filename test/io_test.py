@@ -1,3 +1,4 @@
+import argparse
 import unittest
 
 from dataclasses import dataclass
@@ -15,28 +16,11 @@ class SerialClient:
     def write(self, data: str):
         self.serial.write(bytes(data, encoding="ascii"))
 
-def load_config():
-    fpath = "../config.sh"
-    config = {}
-    fcontent = None
-    with open(fpath, "r") as fp:
-        fcontent = fp.read()
-    lines = fcontent.split("\n")
-    for line in lines:
-        if not line:
-            continue
-
-        key, value = line.split("=")
-        config[key] = value.replace('"', "")
-
-    return config
-
 class IoTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        timeout_seconds = 5
-        config = load_config()
-        ser = Serial(config["PORT"], 9600, timeout=timeout_seconds)
+        args = parse_args()
+        ser = Serial(args.port, args.bps, timeout=args.timeout)
         cls.client = SerialClient(ser)
 
     def test_1_handshake(self):
@@ -57,6 +41,13 @@ class IoTest(unittest.TestCase):
         self.__class__.client.write("X\n")
         res = self.__class__.client.readline()
         self.assertEqual(res, "Syntax error\n")
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", type=str, default="/dev/ttyACM0")
+    parser.add_argument("--bps", type=int, default=9600)
+    parser.add_argument("--timeout", type=int, default=5)
+    return parser.parse_args()
 
 if __name__ == "__main__":
     unittest.main(verbosity=3)
